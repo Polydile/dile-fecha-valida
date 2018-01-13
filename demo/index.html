@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>dile-fecha-valida demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../dile-fecha-valida.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Spanish dile-fecha-valida demo</h3>
+      <demo-snippet>
+        <template>
+          <dile-fecha-valida format="es"
+          months_names="enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre"
+          first_year="2000"
+          last_year="2030"
+          ></dile-fecha-valida>
+        </template>
+      </demo-snippet>
+
+      <h3>English dile-fecha-valida demo</h3>
+      <demo-snippet>
+        <template>
+          <dile-fecha-valida format="en"
+          months_names="enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre"
+          ></dile-fecha-valida>
+        </template>
+      </demo-snippet>
+
+      <h3>SQL format dile-fecha-valida demo</h3>
+      <demo-snippet>
+        <template>
+          <dile-fecha-valida format="sql"></dile-fecha-valida>
+        </template>
+      </demo-snippet>
+
+      <h3>SQL format dile-fecha-valida demo</h3>
+      <demo-snippet>
+        <template>
+          <dile-fecha-valida 
+            format="text" 
+            
+          ></dile-fecha-valida>
+        </template>
+      </demo-snippet>
+
+    </div>
+  </body>
+</html>

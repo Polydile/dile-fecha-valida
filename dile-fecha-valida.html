@@ -1,0 +1,123 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="./dile-timestamp-to-date.html">
+<link rel="import" href="./dile-select-date.html">
+
+<dom-module id="dile-fecha-valida">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .ocultado{
+        display:none;
+      }
+    </style>
+    <div class$="[[estadoFecha]]">
+      <h4>Click on the date to introduce a new one</h4>
+      <dile-timestamp-to-date 
+          id="mostrarFecha"
+          
+          on-click="_entrarNuevaFecha" 
+          format="[[format]]" 
+          timestamp="[[fecha.timestamp]]"
+          months_names="[[months_names]]"
+      ></dile-timestamp-to-date>
+    </div>
+     <dile-select-date
+        id="entrarFecha"
+        class$="[[estadoInput]]"
+        months_names="[[months_names]]"
+        on-nueva_fecha="nueva_fecha"
+        first_year="[[first_year]]"
+        last_year="[[last_year]]"
+     ></dile-select-date>
+
+  </template>
+
+  <script>
+    /**
+     * `dile-fecha-valida`
+     * Input a valid date
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class DileFechaValida extends Polymer.Element {
+      static get is() { return 'dile-fecha-valida'; }
+      static get properties() {
+        return {
+          estadoFecha: {
+            type: String,
+            value: ''
+          },
+          estadoInput: {
+            type: String,
+            value: 'ocultado'
+          },
+          first_year: String,
+          last_year: String,
+          fecha: {
+            type: Object,
+            value: function(){
+              return {
+                dia:'',
+                mes:'',
+                anyo:'',
+                timestamp: null
+              }
+            },
+          },
+          format: {
+            type: String,
+            value: 'es'
+          },
+          months_names: {
+            type: String,
+            value: ''
+          },
+
+        };
+      }
+
+      _getTimestamp(dia,mes,anyo){
+        var d=new Date(anyo, mes-1, dia, 0, 0, 0, 0)
+        return d.valueOf()
+      }
+      _entrarNuevaFecha(){
+        this.set('fecha.dia',this.fecha.dia='-')
+          this.set('fecha.mes',this.fecha.mes='-')
+          this.set('fecha.anyo',this.fecha.anyo='-')
+          this.set('fecha.timestamp',this.fecha.timestamp="")
+          this.notifyPath('fecha.timestamp');
+        this.estadoFecha='ocultado'
+        this.estadoInput=''
+      }
+
+      nueva_fecha(e){
+          var d=e.detail.fecha
+          this.set('fecha.dia',this.fecha.dia=d.getDate())
+          this.set('fecha.mes',this.fecha.mes=d.getMonth()+1)
+          this.set('fecha.anyo',this.fecha.anyo=d.getFullYear())
+          this.set('fecha.timestamp',this.fecha.timestamp=this._getTimestamp(this.fecha.dia,this.fecha.mes,this.fecha.anyo))
+          this.notifyPath('fecha.timestamp');
+          this.estadoFecha=""
+          this.estadoInput="ocultado"
+      }
+
+      ready() {
+          super.ready();
+          var d=new Date()
+          this.set('fecha.dia',this.fecha.dia=d.getDate())
+          this.set('fecha.mes',this.fecha.mes=d.getMonth()+1)
+          this.set('fecha.anyo',this.fecha.anyo=d.getFullYear())
+          this.set('fecha.timestamp',this.fecha.timestamp=this._getTimestamp(this.fecha.dia,this.fecha.mes,this.fecha.anyo))
+          this.notifyPath('fecha.timestamp');
+        }    
+        
+
+    }
+
+    window.customElements.define(DileFechaValida.is, DileFechaValida);
+  </script>
+</dom-module>

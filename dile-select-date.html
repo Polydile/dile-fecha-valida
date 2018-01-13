@@ -1,0 +1,321 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../neon-animation/web-animations.html">
+
+<dom-module id="dile-select-date">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply --paper-dropdown-menu;
+      }
+     
+      .noCorrecto{
+        color:red;
+        --paper-input-container-underline:{
+          background-color: red;
+        };
+        --paper-input-container-input:{
+          text-align: center;
+          color: white;
+          background-color: red;
+         
+        };
+      }
+      .correcto{
+        color:blue;
+      }
+
+      paper-dropdown-menu {
+        padding-right:15px;
+        --paper-input-container-input:{
+          text-align: center;
+          color:blue;
+        };
+      }
+      paper-dropdown-menu {
+            width:50px 
+      }
+      paper-dropdown-menu.textoMes {
+          width:100px 
+      }
+
+      paper-dropdown-menu#year {
+            width:80px 
+      }
+      paper-item {
+        min-height:8px;
+      }
+  
+    </style>
+    
+    <paper-dropdown-menu label="Day" id="dia" value="{{dia}}" class$="[[correcto]]">
+        <paper-listbox slot="dropdown-content" selected="0" >
+            <template is="dom-repeat" items="{{dias}}">
+                <paper-item invalid>{{item}}</paper-item>
+              </template>    
+          </paper-listbox>
+    </paper-dropdown-menu>
+
+    <paper-dropdown-menu style="max-width:100px" label="Month" id="mes" value="{{mes}}"  class$="[[correcto]] [[textoMes]]">
+        <paper-listbox slot="dropdown-content" selected="0" >
+            <template is="dom-repeat" items="{{meses}}" >
+                <paper-item >{{item}}</paper-item>
+              </template>    
+          </paper-listbox>
+    </paper-dropdown-menu>
+
+    <paper-dropdown-menu label="Year" id="year" value="{{year}}"  class$="[[correcto]]">
+        <paper-listbox slot="dropdown-content" selected="0">
+            <template is="dom-repeat" items="{{years}}">
+                <paper-item>{{item}}</paper-item>
+              </template>    
+          </paper-listbox>
+    </paper-dropdown-menu>
+    <h3 class$="[[correcto]]">[[fecha]]</h3>
+    [[errorMeses]]
+    
+  </template>
+
+  <script>
+    /**
+     *
+     * # \<dile-select-date\>
+     *
+     * Polymer component to select a valid date without calecdar. Possibility to write the name month introduced by the user.
+     *
+     * `<dile-select-date>`
+     *
+     * ## Polymer Element to select a valid date.
+     *
+     * Polymer component to select a date.
+     *
+     * Possibility to introduce the month names.
+     *
+     * The date is shown if it is valid or a message in case of not valid date.
+     *
+     * The month names are introduced as a string, delimited by comas, in the attribute months_names. They must be twelve, starting with the first month of the year and in secuencial order.
+     *
+     * In case of error or not declared month names, it is considered the cardinal number of the months 
+     * 
+     * ```html
+     * <dile-select-date
+     *     months_names="Ene,Feb,Mar,Apr,May,Jun,Jul,Ago,Sep,Oct,Nov,Dic"
+     * ></dile-select-date>
+     * ```
+     *
+     * ```html
+     * <dile-select-date></dile-select-date>
+     * ```
+     *
+     * The year range could be fixed with the attributes first_year and last year
+     * 
+     * ```html
+     * <dile-select-date 
+     *    first_year="2000" last_year="2018" 
+     * ></dile-select-date>
+     * ```
+     *
+     *
+     * ## Styling
+     *
+     * Custom property | Description | Default
+     * ----------------|-------------|---------
+     * --dile-select-date | Mixin applied to entire element | {}
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class DileSelectDate extends (class extends Polymer.Element {}) {
+      static get is() { return 'dile-select-date'; }
+      static get properties() {
+        return {
+          /**
+          * The day selected
+          * @type {String}
+          */
+          dia: String,
+          /**
+          * The month selected
+          * @type {String}
+          */
+          mes: String,
+          /**
+          * The year selected
+          * @type {String}
+          */
+          year: String,
+          /**
+          * Used to control validity of the date
+          * @type {String}
+          */
+          correcto:{
+            type: String,
+            value: 'correcto'
+          },
+          /**
+          * List of the days
+          * @type {Array}
+          */
+          dias: {
+            type: Array,
+            value: function(){
+              return []
+            }
+          },
+           /**
+          * List of the month
+          * @type {Array}
+          */
+          meses: {
+            type: Array,
+            value: function(){
+              return []
+            }
+          },
+           /**
+          * List of the years
+          * @type {Array}
+          */
+          years: {
+            type: Array,
+            value: function(){
+              return []
+            }
+          },
+          /**
+          * To show the resault of select date
+          * @type {String}
+          */
+          fecha: {
+            type: String,
+            value: ''
+          },
+          /**
+          * To get the string of months names
+          * @type {String}
+          */
+          months_names: {
+            type: String,
+            value: ''
+          },
+          /**
+          * To set first year
+          * @type {String}
+          */
+          first_year: {
+            type: String,
+            value: '1940'
+          },
+          /**
+          * To set last year
+          * @type {String}
+          */
+          last_year: {
+            type: String,
+            value: '2050'
+          },
+          /**
+          * To get the string of months names
+          * @type {String}
+          */
+          textoMes: {
+            type: String,
+            value: ''
+          },
+          /**
+          * To show error of attribute months_names received
+          * @type {String}
+          */
+          errorMeses: {
+            type: String,
+            value: ''
+          },
+        };
+      }
+
+      static get observers() {
+        return [
+            '_cambioFecha(dia, mes, year)'
+        ]
+      }
+       /**
+       * Initialace list of days, months, years
+       */
+       connectedCallback(){
+        super.connectedCallback()
+        var dias=[" - "]
+        for (var i=1;i<=31;i++) dias.push(i)
+        this.set('dias',dias)
+        var meses=[" - "]
+        if(this.months_names==''){
+          for (i=1;i<=12;i++) meses.push(i.toString())
+        }
+        else{
+          var nombreMeses=[]
+          nombreMeses=this.months_names.split(",")
+          if(nombreMeses.length!=12){
+            this.errorMeses="The number of months names should be 12, instead of "+nombreMeses.length
+            for (i=1;i<=12;i++) meses.push(i.toString())
+          }  
+          else{
+            nombreMeses.forEach(function(item,index){
+              meses.push(item.trim())
+            })
+            this.textoMes='textoMes'
+          }
+        }
+        this.set('meses',meses)
+        if(this.first_year>this.last_year)
+            this.last_year = [this.first_year, this.first_year = this.last_year][0];
+        var years=[" - "]
+        for (i=this.first_year;i<=this.last_year;i++) years.push(i)
+        this.set('years',years)
+        
+      }
+
+      /**
+      * This method check if the date is valid
+      * It recives the day, month and year selected
+      * Return a string of the date if it is vadid otherwise the message 'Invalid date' 
+      * @param {String} dia day selected
+      * @param {String} mes month selected
+      * @param {String} year year selected
+      * @return {String} date (day month year) or message Invalid date
+      */
+      _cambioFecha(dia, mes, year){
+        if(dia=='-' || mes=='-' || year=='-') 
+          return this.fecha=""
+        var indexMes=this.meses.indexOf(mes) 
+        var date=new Date(year,indexMes-1,dia,0,0,0,0)
+        
+        if(date.getDate()!=dia) {
+          this.correcto='noCorrecto'
+          return this.fecha="Invalid date"
+        }
+        this.correcto='correcto'
+        this.dispatchEvent(new CustomEvent('nueva_fecha',{
+                    detail:{
+                        fecha: date
+                    },
+                    bubbles:true,
+                    composed:true
+        }))
+        return this.fecha=this._dosDigitos(dia)+' '+this._dosDigitos(mes)+' '+year
+      }
+      /**
+      * Method to present numbers with 2 digits
+      * @param {String} numero set number
+      * @return {String} string of length=2 with a initial "0" if necessary.
+      */ 
+      _dosDigitos(numero){
+        return numero<10?"0"+numero:numero
+      }
+    }
+
+    window.customElements.define(DileSelectDate.is, DileSelectDate);
+  </script>
+</dom-module>
